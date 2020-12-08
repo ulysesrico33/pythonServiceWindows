@@ -1,26 +1,33 @@
-import time
-import random
-from pathlib import Path
-from SMWinservice import SMWinservice
+import win32serviceutil
+import win32service
+import win32event
+import servicemanager
+from multiprocessing import Process
 
-class svcmain(SMWinservice):
-    _svc_name_ = "PythonCornerExample"
-    _svc_display_name_ = "Python Corner's Winservice Example"
-    _svc_description_ = "That's a great winservice! :)"
+from app import app
 
-    def start(self):
-        self.isrunning = True
 
-    def stop(self):
-        self.isrunning = False
+class Service(win32serviceutil.ServiceFramework):
+    _svc_name_ = "TestService"
+    _svc_display_name_ = "Test Service"
+    _svc_description_ = "Tests Python service framework by receiving and echoing messages over a named pipe"
+
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    def SvcStop(self):
+        self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        self.process.terminate()
+        self.ReportServiceStatus(win32service.SERVICE_STOPPED)
+
+    def SvcDoRun(self):
+        self.process = Process(target=self.main)
+        self.process.start()
+        self.process.run()
 
     def main(self):
-        i = 0
-        while self.isrunning:
-            random.seed()
-            x = random.randint(1, 1000000)
-            Path(f'c:{x}.txt').touch()
-            time.sleep(5)
+        app.run()
+
 
 if __name__ == '__main__':
-    svcmain.parse_command_line()
+    win32serviceutil.HandleCommandLine(Service)

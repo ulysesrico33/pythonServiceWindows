@@ -22,7 +22,7 @@ class svcTest(SMWinservice):
 
     def main(self):
         while self.isrunning:
-            appendInfoToFile('C:\\Users\\1098350515\\Documents','test.txt','hey')
+            appendInfoToFile('C:\\Users\\1098350515\\Documents\\','test.txt','hey')
             
             
             

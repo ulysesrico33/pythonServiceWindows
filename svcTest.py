@@ -4,6 +4,11 @@ from pathlib import Path
 from SMWinservice import SMWinservice
 import os
 
+def appendInfoToFile(path,filename,strcontent):
+    txtFile=open(path+filename,'a+')
+    txtFile.write(strcontent)
+    txtFile.close()
+
 class svcTest(SMWinservice):
     _svc_name_ = "svcTEST"
     _svc_display_name_ = "svcTEST"
@@ -17,7 +22,8 @@ class svcTest(SMWinservice):
 
     def main(self):
         while self.isrunning:
-            os.system('notepad')
+            appendInfoToFile('C:\\Users\\1098350515\\Documents','test.txt','hey')
+            
             
             
 
